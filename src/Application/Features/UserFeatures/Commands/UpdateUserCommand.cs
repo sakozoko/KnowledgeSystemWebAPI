@@ -1,5 +1,4 @@
 ﻿using Application.Interfaces.Repositories;
-using Domain.Entities;
 using FluentValidation;
 using MediatR;
 
@@ -12,7 +11,6 @@ public class UpdateUserCommand : IRequest<int>
     public string? Name { get; set; }
     public string? Surname { get; set; }
     public string? Phone { get; set; }
-    public DateTime? CreatedDate { get; set; }
     public string? Email { get; set; }
     public string? Password { get; set; }
     public string? Role { get; set; }
@@ -39,8 +37,8 @@ public class UpdateUserCommand : IRequest<int>
         
         public UpdateUserCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository)
         {
-            //_userRepository = userRepository;
-            //_roleRepository = roleRepository;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
         }
 
         public async Task<int> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
@@ -50,6 +48,13 @@ public class UpdateUserCommand : IRequest<int>
             {
                 return default;
             }
+            var role = await _roleRepository.GetRoleByNameAsync(request.Role);
+            if (role is null)
+            {
+                return default;
+            }
+
+            user.Role = role;
             user.CreatedDate = DateTime.Now;
             user.Email = request.Email;
             user.Password = request.Password;
@@ -57,11 +62,7 @@ public class UpdateUserCommand : IRequest<int>
             user.Name = request.Name;
             user.Surname = request.Surname;
             user.UserName = request.UserName;
-            var rule = await _roleRepository.GetRoleByNameAsync(request.Name);
-            if (rule is null)
-            {
-                return default;
-            }
+            
 
             return user.Id;
         }
