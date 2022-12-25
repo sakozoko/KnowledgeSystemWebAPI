@@ -59,7 +59,7 @@ public class UpdateUserCommand : IRequest<int>
             user.Email = request.Email;
             user.Password = request.Password;
             user.Phone = request.Phone;
-            user.Name = request.Name;
+            user.FirstName = request.Name;
             user.Surname = request.Surname;
             user.UserName = request.UserName;
             
