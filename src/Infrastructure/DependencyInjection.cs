@@ -17,5 +17,9 @@ public static class DependencyInjection
                 b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<ITestRepository, TestRepository>();
+        services.AddScoped<IAnswerRepository, AnswerRepository>();
+        services.AddScoped<IPassedTestRepository, PassedTestRepository>();
+        services.AddScoped<IQuestionRepository, QuestionRepository>();
     }
 }

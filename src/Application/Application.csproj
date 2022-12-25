@@ -9,7 +9,6 @@
     <ItemGroup>
       <Folder Include="Features\UserFeatures\Queries" />
       <Folder Include="Interfaces" />
-      <Folder Include="Services" />
     </ItemGroup>
 
     <ItemGroup>

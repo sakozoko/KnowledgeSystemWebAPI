@@ -4,5 +4,5 @@ namespace Application.Interfaces.Repositories;
 
 public interface ITestRepository : IGenericRepository<TestEntity>
 {
-    public Task<IQueryable<TestEntity>> GetAllWithDetailsAsync();
+    public Task<IEnumerable<TestEntity>> GetAllWithDetailsAsync();
 }
