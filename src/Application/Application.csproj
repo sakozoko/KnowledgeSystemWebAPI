@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Features\UserFeatures\Queries" />
       <Folder Include="Interfaces" />
     </ItemGroup>
 

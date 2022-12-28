@@ -17,7 +17,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,16 +37,17 @@ namespace Infrastructure.Migrations
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(320)", maxLength: 320, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: true)
+                    RoleEntityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Roles_RoleId",
-                        column: x => x.RoleId,
+                        name: "FK_Users_Roles_RoleEntityId",
+                        column: x => x.RoleEntityId,
                         principalTable: "Roles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,18 +59,19 @@ namespace Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     MaxMark = table.Column<double>(type: "float", nullable: true),
-                    UserCreatorId = table.Column<int>(type: "int", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserEntityCreatorId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tests_Users_UserCreatorId",
-                        column: x => x.UserCreatorId,
+                        name: "FK_Tests_Users_UserEntityCreatorId",
+                        column: x => x.UserEntityCreatorId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -78,25 +80,26 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TestId = table.Column<int>(type: "int", nullable: true),
+                    TestEntityId = table.Column<int>(type: "int", nullable: true),
                     Mark = table.Column<double>(type: "float", nullable: true),
                     StartedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PassedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    UserEntityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PassedTests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PassedTests_Tests_TestId",
-                        column: x => x.TestId,
+                        name: "FK_PassedTests_Tests_TestEntityId",
+                        column: x => x.TestEntityId,
                         principalTable: "Tests",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_PassedTests_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_PassedTests_Users_UserEntityId",
+                        column: x => x.UserEntityId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -106,17 +109,18 @@ namespace Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    TestId = table.Column<int>(type: "int", nullable: true),
+                    TestEntityId = table.Column<int>(type: "int", nullable: false),
                     Mark = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Questions_Tests_TestId",
-                        column: x => x.TestId,
+                        name: "FK_Questions_Tests_TestEntityId",
+                        column: x => x.TestEntityId,
                         principalTable: "Tests",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,16 +131,17 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
                     IsCorrect = table.Column<bool>(type: "bit", nullable: false),
-                    QuestionId = table.Column<int>(type: "int", nullable: true)
+                    QuestionEntityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Answers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Answers_Questions_QuestionId",
-                        column: x => x.QuestionId,
+                        name: "FK_Answers_Questions_QuestionEntityId",
+                        column: x => x.QuestionEntityId,
                         principalTable: "Questions",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -145,76 +150,76 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PassedTestId = table.Column<int>(type: "int", nullable: true),
-                    QuestionId = table.Column<int>(type: "int", nullable: true),
-                    AnswerId = table.Column<int>(type: "int", nullable: true)
+                    PassedTestEntityId = table.Column<int>(type: "int", nullable: false),
+                    QuestionEntityId = table.Column<int>(type: "int", nullable: true),
+                    AnswerEntityId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AnswerDumps", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AnswerDumps_Answers_AnswerId",
-                        column: x => x.AnswerId,
+                        name: "FK_AnswerDumps_Answers_AnswerEntityId",
+                        column: x => x.AnswerEntityId,
                         principalTable: "Answers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AnswerDumps_PassedTests_PassedTestId",
-                        column: x => x.PassedTestId,
+                        name: "FK_AnswerDumps_PassedTests_PassedTestEntityId",
+                        column: x => x.PassedTestEntityId,
                         principalTable: "PassedTests",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AnswerDumps_Questions_QuestionId",
-                        column: x => x.QuestionId,
+                        name: "FK_AnswerDumps_Questions_QuestionEntityId",
+                        column: x => x.QuestionEntityId,
                         principalTable: "Questions",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerDumps_AnswerId",
+                name: "IX_AnswerDumps_AnswerEntityId",
                 table: "AnswerDumps",
-                column: "AnswerId");
+                column: "AnswerEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerDumps_PassedTestId",
+                name: "IX_AnswerDumps_PassedTestEntityId",
                 table: "AnswerDumps",
-                column: "PassedTestId");
+                column: "PassedTestEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerDumps_QuestionId",
+                name: "IX_AnswerDumps_QuestionEntityId",
                 table: "AnswerDumps",
-                column: "QuestionId");
+                column: "QuestionEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answers_QuestionId",
+                name: "IX_Answers_QuestionEntityId",
                 table: "Answers",
-                column: "QuestionId");
+                column: "QuestionEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PassedTests_TestId",
+                name: "IX_PassedTests_TestEntityId",
                 table: "PassedTests",
-                column: "TestId");
+                column: "TestEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PassedTests_UserId",
+                name: "IX_PassedTests_UserEntityId",
                 table: "PassedTests",
-                column: "UserId");
+                column: "UserEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_TestId",
+                name: "IX_Questions_TestEntityId",
                 table: "Questions",
-                column: "TestId");
+                column: "TestEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Roles_Name",
                 table: "Roles",
                 column: "Name",
-                unique: true,
-                filter: "[Name] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tests_UserCreatorId",
+                name: "IX_Tests_UserEntityCreatorId",
                 table: "Tests",
-                column: "UserCreatorId");
+                column: "UserEntityCreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
@@ -229,9 +234,9 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId",
+                name: "IX_Users_RoleEntityId",
                 table: "Users",
-                column: "RoleId");
+                column: "RoleEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_UserName",

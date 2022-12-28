@@ -30,22 +30,22 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AnswerId")
+                    b.Property<int?>("AnswerEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PassedTestId")
+                    b.Property<int>("PassedTestEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("QuestionId")
+                    b.Property<int?>("QuestionEntityId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnswerId");
+                    b.HasIndex("AnswerEntityId");
 
-                    b.HasIndex("PassedTestId");
+                    b.HasIndex("PassedTestEntityId");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("QuestionEntityId");
 
                     b.ToTable("AnswerDumps");
                 });
@@ -58,11 +58,10 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("IsCorrect")
-                        .IsRequired()
+                    b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("QuestionId")
+                    b.Property<int>("QuestionEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -72,7 +71,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("QuestionEntityId");
 
                     b.ToTable("Answers");
                 });
@@ -95,17 +94,17 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TestId")
+                    b.Property<int?>("TestEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserEntityId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TestId");
+                    b.HasIndex("TestEntityId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserEntityId");
 
                     b.ToTable("PassedTests");
                 });
@@ -121,7 +120,7 @@ namespace Infrastructure.Migrations
                     b.Property<double?>("Mark")
                         .HasColumnType("float");
 
-                    b.Property<int?>("TestId")
+                    b.Property<int>("TestEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -131,7 +130,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TestId");
+                    b.HasIndex("TestEntityId");
 
                     b.ToTable("Questions");
                 });
@@ -145,13 +144,13 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .IsUnique()
-                        .HasFilter("[Name] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Roles");
                 });
@@ -165,6 +164,7 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -183,12 +183,12 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<int?>("UserCreatorId")
+                    b.Property<int>("UserEntityCreatorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserCreatorId");
+                    b.HasIndex("UserEntityCreatorId");
 
                     b.ToTable("Tests");
                 });
@@ -224,7 +224,7 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(15)
                         .HasColumnType("nvarchar(15)");
 
-                    b.Property<int?>("RoleId")
+                    b.Property<int>("RoleEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Surname")
@@ -245,7 +245,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("Phone")
                         .IsUnique();
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleEntityId");
 
                     b.HasIndex("UserName")
                         .IsUnique();
@@ -257,15 +257,17 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.AnswerEntity", "Answer")
                         .WithMany()
-                        .HasForeignKey("AnswerId");
+                        .HasForeignKey("AnswerEntityId");
 
                     b.HasOne("Domain.Entities.PassedTestEntity", "PassedTest")
                         .WithMany("Answers")
-                        .HasForeignKey("PassedTestId");
+                        .HasForeignKey("PassedTestEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.QuestionEntity", "Question")
                         .WithMany()
-                        .HasForeignKey("QuestionId");
+                        .HasForeignKey("QuestionEntityId");
 
                     b.Navigation("Answer");
 
@@ -278,7 +280,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.QuestionEntity", "Question")
                         .WithMany("Answers")
-                        .HasForeignKey("QuestionId");
+                        .HasForeignKey("QuestionEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Question");
                 });
@@ -287,11 +291,13 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.TestEntity", "Test")
                         .WithMany()
-                        .HasForeignKey("TestId");
+                        .HasForeignKey("TestEntityId");
 
                     b.HasOne("Domain.Entities.UserEntity", "User")
                         .WithMany("PassedTests")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Test");
 
@@ -302,7 +308,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.TestEntity", "Test")
                         .WithMany("Questions")
-                        .HasForeignKey("TestId");
+                        .HasForeignKey("TestEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Test");
                 });
@@ -311,7 +319,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.UserEntity", "UserCreator")
                         .WithMany("CreatedTests")
-                        .HasForeignKey("UserCreatorId");
+                        .HasForeignKey("UserEntityCreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("UserCreator");
                 });
@@ -320,7 +330,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.RoleEntity", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleEntityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Role");
                 });
