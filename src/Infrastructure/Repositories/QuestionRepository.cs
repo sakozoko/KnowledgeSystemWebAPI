@@ -10,9 +10,9 @@ public class QuestionRepository : BaseRepository<QuestionEntity>, IQuestionRepos
     {
     }
 
-    public async Task<IEnumerable<QuestionEntity>> GetAllWithDetailsAsync()
+    public async Task<IEnumerable<QuestionEntity>> GetAllWithDetailsAsync(CancellationToken ct=default)
         => await DbContext.Questions
             .Include(q => q.Test)
             .Include(q => q.Answers)
-            .ToListAsync();
+            .ToListAsync(ct);
 }

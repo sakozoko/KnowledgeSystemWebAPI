@@ -10,7 +10,7 @@ public class AnswerDumpRepository : BaseRepository<AnswerDumpEntity>,IAnswerDump
     {
     }
 
-    public override async Task<AnswerDumpEntity?> GetByIdAsync(int id)
+    public override async Task<AnswerDumpEntity?> GetByIdAsync(int id, CancellationToken ct)
         => await DbContext.AnswerDumps
             .Include(ad => ad.Answer)
             .ThenInclude(a => a.Question)
@@ -31,6 +31,6 @@ public class AnswerDumpRepository : BaseRepository<AnswerDumpEntity>,IAnswerDump
             .ThenInclude(pt => pt.Test)
             .Include(ad => ad.PassedTest)
             .ThenInclude(pt => pt.Answers)
-            .FirstOrDefaultAsync(ad => ad.Id == id);
+            .FirstOrDefaultAsync(ad => ad.Id == id, ct);
 
 }
