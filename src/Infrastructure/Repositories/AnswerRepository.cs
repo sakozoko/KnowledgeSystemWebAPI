@@ -8,5 +8,4 @@ public class AnswerRepository : BaseRepository<AnswerEntity>, IAnswerRepository
     public AnswerRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
-    
 }

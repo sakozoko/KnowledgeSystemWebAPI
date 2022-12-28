@@ -10,11 +10,12 @@ public class TestRepository : BaseRepository<TestEntity>, ITestRepository
     {
     }
 
-    public async Task<IEnumerable<TestEntity>> GetAllWithDetailsAsync(CancellationToken ct=default)
-        => await DbContext.Tests
+    public async Task<IEnumerable<TestEntity>> GetAllWithDetailsAsync(CancellationToken ct = default)
+    {
+        return await DbContext.Tests
             .Include(t => t.UserCreator)
             .Include(t => t.Questions)
             .ThenInclude(q => q.Answers)
             .ToListAsync(ct);
-
+    }
 }

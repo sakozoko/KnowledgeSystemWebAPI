@@ -6,7 +6,12 @@ namespace WebApi;
 public class ExceptionHandlingMiddleware : IMiddleware
 {
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
-    public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger) => _logger = logger;
+
+    public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger)
+    {
+        _logger = logger;
+    }
+
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         try
@@ -19,6 +24,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
             await HandleExceptionAsync(context, e);
         }
     }
+
     private static async Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
     {
         var statusCode = GetStatusCode(exception);
@@ -33,26 +39,27 @@ public class ExceptionHandlingMiddleware : IMiddleware
         httpContext.Response.StatusCode = statusCode;
         await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
-    private static int GetStatusCode(Exception exception) =>
-        exception switch
+
+    private static int GetStatusCode(Exception exception)
+    {
+        return exception switch
         {
             BadHttpRequestException => StatusCodes.Status400BadRequest,
             ValidationException => StatusCodes.Status422UnprocessableEntity,
             //write status code for 404 and 500
-            
-            
+
+
             _ => StatusCodes.Status500InternalServerError
         };
+    }
 
     private static IReadOnlyDictionary<string, string[]> GetErrors(Exception exception)
     {
         IReadOnlyDictionary<string, string[]> errors = null;
         if (exception is ValidationException validationException)
-        {
             errors = validationException.Errors.ToDictionary(
-                keySelector: error => error.PropertyName,
-                elementSelector: error => new[] { error.ErrorMessage });
-        }
+                error => error.PropertyName,
+                error => new[] { error.ErrorMessage });
         return errors;
     }
 }

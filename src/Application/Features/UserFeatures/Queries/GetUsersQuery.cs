@@ -16,6 +16,8 @@ public class GetUsersQuery : IRequest<IEnumerable<UserEntity>>
         }
 
         public async Task<IEnumerable<UserEntity>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
-            => await _userRepository.GetAllWithDetailsAsync(cancellationToken);
+        {
+            return await _userRepository.GetAllWithDetailsAsync(cancellationToken);
+        }
     }
 }

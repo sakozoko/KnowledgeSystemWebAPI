@@ -28,9 +28,11 @@ public class DeleteUserCommand : IRequest<UserEntity>
             {
                 _userRepository = userRepository;
             }
+
             public async Task<UserEntity> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
-                => await _userRepository.DeleteAsync(request.Id, cancellationToken);
-            
+            {
+                return await _userRepository.DeleteAsync(request.Id, cancellationToken);
+            }
         }
     }
 }

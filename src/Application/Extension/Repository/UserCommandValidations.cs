@@ -20,9 +20,11 @@ public static class UserCommandValidations
     }
 
     public static bool PhoneIsUnique(this IUserRepository userRepository, string phone)
-        => userRepository.GetByPredicateAsync(c => c.Phone == phone).Result is null;
+    {
+        return userRepository.GetByPredicateAsync(c => c.Phone == phone).Result is null;
+    }
 
-    public static bool RoleIsExist(this IRoleRepository roleRepository ,string roleName)
+    public static bool RoleIsExist(this IRoleRepository roleRepository, string roleName)
     {
         return roleRepository.GetRoleByNameAsync(roleName).Result is not null;
     }

@@ -1,7 +1,7 @@
-﻿using Application.Interfaces.Repositories;
+﻿using Application.Extension.Repository;
+using Application.Interfaces.Repositories;
 using FluentValidation;
 using MediatR;
-using Application.Extension.Repository;
 
 namespace Application.Features.UserFeatures.Commands;
 
@@ -25,27 +25,27 @@ public class UpdateUserCommand : IRequest<int>
                 .GreaterThan(0)
                 .Must(userRepository.UserIsExist)
                 .WithMessage("User must exist");
-            RuleFor(c=>c.Email).NotEmpty()
+            RuleFor(c => c.Email).NotEmpty()
                 .MaximumLength(320)
                 .EmailAddress()
                 .Must(userRepository.EmailIsUnique)
                 .WithMessage("Email must be unique, length less than 320");
-            RuleFor(c=>c.Password).NotEmpty()
+            RuleFor(c => c.Password).NotEmpty()
                 .MaximumLength(128);
-            RuleFor(c=>c.UserName).NotEmpty()
+            RuleFor(c => c.UserName).NotEmpty()
                 .MaximumLength(64)
                 .Must(userRepository.UserNameIsUnique)
                 .WithMessage("Username must be unique, length less than 64");
-            RuleFor(c=>c.FirstName).NotEmpty()
+            RuleFor(c => c.FirstName).NotEmpty()
                 .MaximumLength(64);
-            RuleFor(c=>c.Surname).NotEmpty()
+            RuleFor(c => c.Surname).NotEmpty()
                 .MaximumLength(64);
-            RuleFor(c=>c.Phone).NotEmpty()
+            RuleFor(c => c.Phone).NotEmpty()
                 .Matches("^[0-9]*$")
                 .MaximumLength(15)
                 .Must(userRepository.PhoneIsUnique)
                 .WithMessage("Phone must be unique, length less than 15");
-            RuleFor(c=>c.Role).NotEmpty()
+            RuleFor(c => c.Role).NotEmpty()
                 .MaximumLength(32)
                 .Must(roleRepository.RoleIsExist)
                 .WithMessage("Role must exist, length less than 32");
@@ -54,9 +54,9 @@ public class UpdateUserCommand : IRequest<int>
 
     public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, int>
     {
-        private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
-        
+        private readonly IUserRepository _userRepository;
+
         public UpdateUserCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository)
         {
             _userRepository = userRepository;
@@ -65,9 +65,9 @@ public class UpdateUserCommand : IRequest<int>
 
         public async Task<int> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdWithDetailsAsync(request.Id,cancellationToken);
-            var role = await _roleRepository.GetRoleByNameAsync(request.Role,cancellationToken);
-            
+            var user = await _userRepository.GetByIdWithDetailsAsync(request.Id, cancellationToken);
+            var role = await _roleRepository.GetRoleByNameAsync(request.Role, cancellationToken);
+
             user.Role = role;
             user.CreatedDate = DateTime.Now;
             user.Email = request.Email;
@@ -81,5 +81,5 @@ public class UpdateUserCommand : IRequest<int>
 
             return user.Id;
         }
-    } 
+    }
 }

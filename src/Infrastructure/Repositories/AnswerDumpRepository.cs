@@ -4,14 +4,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class AnswerDumpRepository : BaseRepository<AnswerDumpEntity>,IAnswerDumpRepository
+public class AnswerDumpRepository : BaseRepository<AnswerDumpEntity>, IAnswerDumpRepository
 {
     public AnswerDumpRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
     }
 
     public override async Task<AnswerDumpEntity?> GetByIdAsync(int id, CancellationToken ct)
-        => await DbContext.AnswerDumps
+    {
+        return await DbContext.AnswerDumps
             .Include(ad => ad.Answer)
             .ThenInclude(a => a.Question)
             .ThenInclude(q => q.Answers)
@@ -32,5 +33,5 @@ public class AnswerDumpRepository : BaseRepository<AnswerDumpEntity>,IAnswerDump
             .Include(ad => ad.PassedTest)
             .ThenInclude(pt => pt.Answers)
             .FirstOrDefaultAsync(ad => ad.Id == id, ct);
-
+    }
 }

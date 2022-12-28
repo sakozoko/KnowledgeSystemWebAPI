@@ -4,5 +4,5 @@ namespace Application.Interfaces.Repositories;
 
 public interface IQuestionRepository : IGenericRepository<QuestionEntity>
 {
-    public Task<IEnumerable<QuestionEntity>> GetAllWithDetailsAsync(CancellationToken ct=default);
+    public Task<IEnumerable<QuestionEntity>> GetAllWithDetailsAsync(CancellationToken ct = default);
 }

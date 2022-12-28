@@ -16,7 +16,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<PassedTestEntity> PassedTests { get; set; }
     public DbSet<AnswerDumpEntity> AnswerDumps { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
-    
+
     //data annotation
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -76,7 +76,7 @@ public class ApplicationDbContext : DbContext
             .IsRequired();
         modelBuilder.Entity<TestEntity>()
             .HasOne(t => t.UserCreator)
-            .WithMany(c=>c.CreatedTests)
+            .WithMany(c => c.CreatedTests)
             .HasForeignKey("UserEntityCreatorId")
             .IsRequired();
 
@@ -87,14 +87,14 @@ public class ApplicationDbContext : DbContext
         #endregion
 
         #region QuestionEntity
-        
+
         modelBuilder.Entity<QuestionEntity>()
             .Property(q => q.Text)
             .HasMaxLength(512)
             .IsRequired();
         modelBuilder.Entity<QuestionEntity>()
             .HasOne(q => q.Test)
-            .WithMany(t=>t.Questions)
+            .WithMany(t => t.Questions)
             .HasForeignKey("TestEntityId")
             .IsRequired();
 
@@ -106,21 +106,21 @@ public class ApplicationDbContext : DbContext
             .Property(a => a.Text)
             .HasMaxLength(512)
             .IsRequired();
-        
+
         modelBuilder.Entity<AnswerEntity>()
             .Property(a => a.IsCorrect)
             .IsRequired();
 
         modelBuilder.Entity<AnswerEntity>()
             .HasOne(a => a.Question)
-            .WithMany(q=>q.Answers)
+            .WithMany(q => q.Answers)
             .HasForeignKey("QuestionEntityId")
             .IsRequired();
 
         #endregion
 
         #region PassedTestEntity
-        
+
         modelBuilder.Entity<PassedTestEntity>()
             .Property(p => p.StartedDate)
             .IsRequired();
@@ -135,18 +135,18 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<PassedTestEntity>()
             .HasOne(pt => pt.User)
-            .WithMany(u=>u.PassedTests)
+            .WithMany(u => u.PassedTests)
             .HasForeignKey("UserEntityId")
             .IsRequired();
 
         #endregion
-        
+
         #region RoleEntity
-        
+
         modelBuilder.Entity<RoleEntity>()
             .HasIndex(r => r.Name)
             .IsUnique();
-        
+
         #endregion
 
         #region AnswerDumpEntity
@@ -162,11 +162,10 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey("QuestionEntityId");
         modelBuilder.Entity<AnswerDumpEntity>()
             .HasOne(ad => ad.PassedTest)
-            .WithMany(pt=>pt.Answers)
+            .WithMany(pt => pt.Answers)
             .HasForeignKey("PassedTestEntityId")
             .IsRequired();
 
         #endregion
     }
-
 }
