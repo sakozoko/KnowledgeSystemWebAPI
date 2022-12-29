@@ -9,13 +9,13 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    public DbSet<UserEntity> Users { get; set; }
-    public DbSet<AnswerEntity> Answers { get; set; }
-    public DbSet<QuestionEntity> Questions { get; set; }
-    public DbSet<TestEntity> Tests { get; set; }
-    public DbSet<PassedTestEntity> PassedTests { get; set; }
-    public DbSet<AnswerDumpEntity> AnswerDumps { get; set; }
-    public DbSet<RoleEntity> Roles { get; set; }
+    public DbSet<UserEntity> Users { get; set; } = null!;
+    public DbSet<AnswerEntity> Answers { get; set; } = null!;
+    public DbSet<QuestionEntity> Questions { get; set; } = null!;
+    public DbSet<TestEntity> Tests { get; set; } = null!;
+    public DbSet<PassedTestEntity> PassedTests { get; set; } = null!;
+    public DbSet<AnswerDumpEntity> AnswerDumps { get; set; } = null!;
+    public DbSet<RoleEntity> Roles { get; set; } = null!;
 
     //data annotation
     protected override void OnModelCreating(ModelBuilder modelBuilder)

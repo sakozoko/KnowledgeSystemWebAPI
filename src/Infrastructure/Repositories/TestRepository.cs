@@ -14,7 +14,7 @@ public class TestRepository : BaseRepository<TestEntity>, ITestRepository
     {
         return await DbContext.Tests
             .Include(t => t.UserCreator)
-            .Include(t => t.Questions)
+            .Include(t => t.Questions)!
             .ThenInclude(q => q.Answers)
             .ToListAsync(ct);
     }

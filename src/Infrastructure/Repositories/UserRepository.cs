@@ -29,7 +29,7 @@ public class UserRepository : BaseRepository<UserEntity>, IUserRepository
             .FirstOrDefaultAsync(u => u.Id == id, ct);
     }
 
-    public async Task<IEnumerable<UserEntity?>> GetAllWithDetailsAsync(CancellationToken ct = default)
+    public async Task<IEnumerable<UserEntity>> GetAllWithDetailsAsync(CancellationToken ct = default)
     {
         return await DbContext.Users
             .Include(c => c.Role)

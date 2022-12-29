@@ -36,8 +36,8 @@ public class CreateTestCommand : IRequest<int>
                     .Must(answers=>
                         answers!.Any(a=>a.IsCorrect))
                     .ForEach(answer=>
-                        answer.ChildRules(answer=>
-                            answer.RuleFor(a=>a.Text)
+                        answer.ChildRules(answerDto=>
+                            answerDto.RuleFor(a=>a.Text)
                                 .NotEmpty()
                                 .MaximumLength(512))));
 

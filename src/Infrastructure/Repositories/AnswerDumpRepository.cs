@@ -10,28 +10,13 @@ public class AnswerDumpRepository : BaseRepository<AnswerDumpEntity>, IAnswerDum
     {
     }
 
-    public override async Task<AnswerDumpEntity?> GetByIdAsync(int id, CancellationToken ct)
+    public override async Task<AnswerDumpEntity?> GetByIdAsync(int id, CancellationToken ct = default)
     {
         return await DbContext.AnswerDumps
-            .Include(ad => ad.Answer)
-            .ThenInclude(a => a.Question)
-            .ThenInclude(q => q.Answers)
-            .Include(ad => ad.Answer)
-            .ThenInclude(a => a.Question)
-            .ThenInclude(q => q.Test)
-            .ThenInclude(t => t.UserCreator)
-            .Include(ad => ad.Answer)
-            .ThenInclude(a => a.Question)
-            .ThenInclude(q => q.Test)
-            .ThenInclude(t => t.Questions)
-            .ThenInclude(q => q.Answers)
-            .ThenInclude(a => a.Question)
-            .Include(ad => ad.PassedTest)
-            .ThenInclude(pt => pt.User)
-            .Include(ad => ad.PassedTest)
-            .ThenInclude(pt => pt.Test)
-            .Include(ad => ad.PassedTest)
-            .ThenInclude(pt => pt.Answers)
+            .Include(a=>a.Answer)
+            .Include(a=>a.Question)
+            .ThenInclude(q=>q!.Answers)
+            .Include(a=>a.PassedTest)
             .FirstOrDefaultAsync(ad => ad.Id == id, ct);
     }
 }

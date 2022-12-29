@@ -66,9 +66,9 @@ public class UpdateUserCommand : IRequest<int>
         public async Task<int> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
             var user = await _userRepository.GetByIdWithDetailsAsync(request.Id, cancellationToken);
-            var role = await _roleRepository.GetRoleByNameAsync(request.Role, cancellationToken);
+            var role = await _roleRepository.GetRoleByNameAsync(request.Role!, cancellationToken);
 
-            user.Role = role;
+            user!.Role = role;
             user.CreatedDate = DateTime.Now;
             user.Email = request.Email;
             user.Password = request.Password;
