@@ -84,8 +84,8 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double?>("Mark")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("Mark")
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<DateTime?>("PassedDate")
                         .HasColumnType("datetime2");
@@ -117,8 +117,8 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double?>("Mark")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("Mark")
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<int>("TestEntityId")
                         .HasColumnType("int");
@@ -144,13 +144,13 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("Roles");
                 });
@@ -175,8 +175,8 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double?>("MaxMark")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("MaxMark")
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -202,6 +202,7 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
