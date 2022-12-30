@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Domain.Entities;
+﻿namespace Domain.Entities;
 
 public class PassedTestEntity : BaseEntity
 {

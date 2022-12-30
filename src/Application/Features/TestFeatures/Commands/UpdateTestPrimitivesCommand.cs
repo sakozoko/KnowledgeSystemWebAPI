@@ -18,11 +18,11 @@ public class UpdateTestPrimitivesCommand : IRequest<int>
         {
             RuleFor(t => t.Id)
                 .SetValidator(new EntityValidator<TestEntity>(testRepository));
-            
+
             RuleFor(t => t.Title)
                 .NotEmpty()
                 .MaximumLength(128);
-            
+
             RuleFor(t => t.Description)
                 .MaximumLength(512);
         }
@@ -36,7 +36,7 @@ public class UpdateTestPrimitivesCommand : IRequest<int>
         {
             _testRepository = testRepository;
         }
-        
+
         public async Task<int> Handle(UpdateTestPrimitivesCommand request, CancellationToken cancellationToken)
         {
             var test = await _testRepository.GetByIdAsync(request.Id!.Value, cancellationToken);

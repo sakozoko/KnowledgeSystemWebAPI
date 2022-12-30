@@ -22,7 +22,6 @@ public class UpdateUserCommand : IRequest<int>
     {
         public UpdateUserCommandValidation(IUserRepository userRepository, IRoleRepository roleRepository)
         {
-
             RuleFor(c => c.Id)
                 .SetValidator(new EntityValidator<UserEntity>(userRepository));
             RuleFor(c => c.Email).NotEmpty()
@@ -63,8 +62,8 @@ public class UpdateUserCommand : IRequest<int>
 
         public async Task<int> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdWithDetailsAsync(request.Id.Value, cancellationToken);
-            var role = await _roleRepository.GetByIdAsync(request.RoleId.Value, cancellationToken);
+            var user = await _userRepository.GetByIdWithDetailsAsync(request.Id!.Value, cancellationToken);
+            var role = await _roleRepository.GetByIdAsync(request.RoleId!.Value, cancellationToken);
 
             user!.Role = role;
             user.CreatedDate = DateTime.Now;

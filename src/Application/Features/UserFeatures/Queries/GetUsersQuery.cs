@@ -18,7 +18,7 @@ public class GetUsersQuery : IRequest<IEnumerable<UserDto>>
 
         public async Task<IEnumerable<UserDto>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            var users= await _userRepository.GetAllWithDetailsAsync(cancellationToken);
+            var users = await _userRepository.GetAllWithDetailsAsync(cancellationToken);
             return users.ToUserDtos();
         }
     }

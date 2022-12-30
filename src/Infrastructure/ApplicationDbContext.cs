@@ -104,9 +104,9 @@ public class ApplicationDbContext : DbContext
             .WithMany(t => t.Questions)
             .HasForeignKey("TestEntityId")
             .IsRequired();
-        
+
         modelBuilder.Entity<QuestionEntity>()
-            .Property(q=>q.Mark)
+            .Property(q => q.Mark)
             .HasColumnType("decimal(18,4)");
 
         #endregion
@@ -149,9 +149,9 @@ public class ApplicationDbContext : DbContext
             .WithMany(u => u.PassedTests)
             .HasForeignKey("UserEntityId")
             .IsRequired();
-        
+
         modelBuilder.Entity<PassedTestEntity>()
-            .Property(pt=>pt.Mark)
+            .Property(pt => pt.Mark)
             .HasColumnType("decimal(18,4)");
 
         #endregion

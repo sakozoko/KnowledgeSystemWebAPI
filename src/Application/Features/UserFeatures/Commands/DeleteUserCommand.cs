@@ -1,5 +1,4 @@
-﻿using Application.Extension.Repository;
-using Application.Interfaces.Repositories;
+﻿using Application.Interfaces.Repositories;
 using Application.Validation.CommonValidators;
 using Domain.Entities;
 using FluentValidation;

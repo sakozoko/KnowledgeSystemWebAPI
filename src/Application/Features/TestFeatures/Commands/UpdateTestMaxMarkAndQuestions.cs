@@ -20,7 +20,7 @@ public class UpdateTestMaxMarkAndQuestions : IRequest<int>
         {
             RuleFor(t => t.TestId)
                 .SetValidator(new EntityValidator<TestEntity>(testRepository));
-            
+
             RuleFor(t => t.MaxMark)
                 .NotEmpty()
                 .Must((command, newMaxMark) =>

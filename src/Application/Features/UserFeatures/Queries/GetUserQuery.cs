@@ -20,6 +20,7 @@ public class GetUserQuery : IRequest<UserDto>
                 .SetValidator(new EntityValidator<UserEntity>(userRepository));
         }
     }
+
     public class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserDto>
     {
         private readonly IUserRepository _userRepository;
@@ -33,9 +34,6 @@ public class GetUserQuery : IRequest<UserDto>
         {
             var user = await _userRepository.GetByIdWithDetailsAsync(request.Id!.Value, cancellationToken);
             return user!.ToUserDto();
-        } 
-
-        
+        }
     }
-
 }

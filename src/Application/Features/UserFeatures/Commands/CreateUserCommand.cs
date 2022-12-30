@@ -1,5 +1,6 @@
 ﻿using Application.Extension.Repository;
 using Application.Interfaces.Repositories;
+using Application.Validation.CommonValidators;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -14,7 +15,7 @@ public class CreateUserCommand : IRequest<int>
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public string? Password { get; set; }
-    public string? Role { get; set; }
+    public int? RoleId { get; set; }
 
     public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     {
@@ -40,10 +41,8 @@ public class CreateUserCommand : IRequest<int>
                 .MaximumLength(15)
                 .Must(userRepository.IsPhoneUnique)
                 .WithMessage("Phone must be unique, length less than 15");
-            RuleFor(c => c.Role).NotEmpty()
-                .MaximumLength(32)
-                .Must(roleRepository.IsRoleExist)
-                .WithMessage("Role must exist, length less than 32");
+            RuleFor(c => c.RoleId)
+                .SetValidator(new EntityValidator<RoleEntity>(roleRepository));
         }
     }
 
@@ -60,7 +59,7 @@ public class CreateUserCommand : IRequest<int>
 
         public async Task<int> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            var role = await _roleRepository.GetRoleByNameAsync(request.Role!, cancellationToken);
+            var role = await _roleRepository.GetByIdAsync(request.RoleId!.Value, cancellationToken);
             var user = new UserEntity
             {
                 Email = request.Email,

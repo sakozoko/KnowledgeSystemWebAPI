@@ -14,6 +14,7 @@ public static class FromEntityToDtoMapper
             IsCorrect = answer.IsCorrect
         };
     }
+
     public static IEnumerable<AnswerDto> ToAnswerDtos(this IEnumerable<AnswerEntity> answers)
     {
         return answers.Select(x => x.ToAnswerDto());
@@ -21,7 +22,7 @@ public static class FromEntityToDtoMapper
 
     public static QuestionDto ToQuestionDto(this QuestionEntity question)
     {
-        return new QuestionDto()
+        return new QuestionDto
         {
             Id = question.Id,
             Text = question.Text,
@@ -29,15 +30,15 @@ public static class FromEntityToDtoMapper
             Mark = question.Mark
         };
     }
-    
+
     public static IEnumerable<QuestionDto> ToQuestionDtos(this IEnumerable<QuestionEntity> questions)
     {
         return questions.Select(x => x.ToQuestionDto());
     }
-    
+
     public static TestDto ToTestDto(this TestEntity test)
     {
-        return new TestDto()
+        return new TestDto
         {
             Id = test.Id,
             Title = test.Title,
@@ -46,23 +47,25 @@ public static class FromEntityToDtoMapper
             LastUpdateDate = test.LastModifiedDate,
             Description = test.Description,
             MaxMark = test.MaxMark,
-            UserCreatorId = test.UserCreator.Id
+            UserCreatorId = test.UserCreator!.Id
         };
     }
+
     public static IEnumerable<TestDto> ToTestDtos(this IEnumerable<TestEntity> tests)
     {
         return tests.Select(x => x.ToTestDto());
     }
-    
+
     public static AnswerDumpDto ToAnswerDumpDto(this AnswerDumpEntity answer)
     {
         return new AnswerDumpDto
         {
             Id = answer.Id,
             AnswerId = answer.Answer?.Id,
-            QuestionId = answer.Question?.Id,
+            QuestionId = answer.Question?.Id
         };
     }
+
     public static IEnumerable<AnswerDumpDto> ToAnswerDumpDtos(this IEnumerable<AnswerDumpEntity> answers)
     {
         return answers.Select(x => x.ToAnswerDumpDto());
@@ -70,7 +73,7 @@ public static class FromEntityToDtoMapper
 
     public static PassedTestDto ToPassedTestDto(this PassedTestEntity passedTest)
     {
-        return new PassedTestDto()
+        return new PassedTestDto
         {
             Id = passedTest.Id,
             Mark = passedTest.Mark,
@@ -86,10 +89,11 @@ public static class FromEntityToDtoMapper
     {
         return passedTests.Select(pt => pt.ToPassedTestDto());
     }
+
     //todo remove password
     public static UserDto ToUserDto(this UserEntity user)
     {
-        return new UserDto()
+        return new UserDto
         {
             Id = user.Id,
             UserName = user.UserName,
@@ -103,7 +107,7 @@ public static class FromEntityToDtoMapper
             CreatedDate = user.CreatedDate
         };
     }
-    
+
     public static IEnumerable<UserDto> ToUserDtos(this IEnumerable<UserEntity> users)
     {
         return users.Select(x => x.ToUserDto());

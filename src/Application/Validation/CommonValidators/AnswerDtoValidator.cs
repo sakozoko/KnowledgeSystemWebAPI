@@ -1,8 +1,9 @@
-﻿using FluentValidation;
+﻿using Application.ViewModels;
+using FluentValidation;
 
 namespace Application.Validation.CommonValidators;
 
-public class AnswerDtoValidator : AbstractValidator<ViewModels.AnswerDto>
+public class AnswerDtoValidator : AbstractValidator<AnswerDto>
 {
     public AnswerDtoValidator()
     {
