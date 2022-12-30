@@ -53,13 +53,16 @@ public class ExceptionHandlingMiddleware : IMiddleware
         };
     }
 
-    private static IReadOnlyDictionary<string, string[]> GetErrors(Exception exception)
+    private static IEnumerable<KeyValuePair<string, string[]>> GetErrors(Exception exception)
     {
-        IReadOnlyDictionary<string, string[]> errors = null;
         if (exception is ValidationException validationException)
-            errors = validationException.Errors.ToDictionary(
-                error => error.PropertyName,
-                error => new[] { error.ErrorMessage });
-        return errors;
+            return validationException.Errors
+                .Select(c =>
+                {
+                    return new KeyValuePair<string, string[]>(
+                        c.PropertyName,
+                        new[] { c.ErrorMessage });
+                });
+        else return default!;
     }
 }

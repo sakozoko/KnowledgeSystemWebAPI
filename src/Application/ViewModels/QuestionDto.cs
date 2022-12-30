@@ -1,8 +1,8 @@
 ﻿namespace Application.ViewModels;
 
-public class QuestionDto
+public class QuestionDto : BaseViewModel
 {
     public string? Text { get; set; }
-    public ICollection<AnswerDto>? Answers { get; set; }
+    public IEnumerable<AnswerDto>? Answers { get; set; }
     public decimal? Mark { get; set; }
 }

@@ -12,7 +12,6 @@
         <Folder Include="Features\PassedTestFeatures\Queries" />
         <Folder Include="Features\QuestionFeatures" />
         <Folder Include="Features\RoleFeatures" />
-        <Folder Include="Features\TestFeatures\Queries" />
         <Folder Include="Interfaces" />
     </ItemGroup>
 

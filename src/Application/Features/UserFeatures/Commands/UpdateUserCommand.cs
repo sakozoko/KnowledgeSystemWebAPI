@@ -1,5 +1,7 @@
 ﻿using Application.Extension.Repository;
 using Application.Interfaces.Repositories;
+using Application.Validation.CommonValidators;
+using Domain.Entities;
 using FluentValidation;
 using MediatR;
 
@@ -7,34 +9,32 @@ namespace Application.Features.UserFeatures.Commands;
 
 public class UpdateUserCommand : IRequest<int>
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public string? UserName { get; set; }
     public string? FirstName { get; set; }
     public string? Surname { get; set; }
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public string? Password { get; set; }
-    public string? Role { get; set; }
+    public int? RoleId { get; set; }
 
     public class UpdateUserCommandValidation : AbstractValidator<UpdateUserCommand>
     {
         public UpdateUserCommandValidation(IUserRepository userRepository, IRoleRepository roleRepository)
         {
+
             RuleFor(c => c.Id)
-                .NotEmpty()
-                .GreaterThan(0)
-                .Must(userRepository.UserIsExist)
-                .WithMessage("User must exist");
+                .SetValidator(new EntityValidator<UserEntity>(userRepository));
             RuleFor(c => c.Email).NotEmpty()
                 .MaximumLength(320)
                 .EmailAddress()
-                .Must(userRepository.EmailIsUnique)
+                .Must(userRepository.IsEmailUnique)
                 .WithMessage("Email must be unique, length less than 320");
             RuleFor(c => c.Password).NotEmpty()
                 .MaximumLength(128);
             RuleFor(c => c.UserName).NotEmpty()
                 .MaximumLength(64)
-                .Must(userRepository.UserNameIsUnique)
+                .Must(userRepository.IsUserNameUnique)
                 .WithMessage("Username must be unique, length less than 64");
             RuleFor(c => c.FirstName).NotEmpty()
                 .MaximumLength(64);
@@ -43,12 +43,10 @@ public class UpdateUserCommand : IRequest<int>
             RuleFor(c => c.Phone).NotEmpty()
                 .Matches("^[0-9]*$")
                 .MaximumLength(15)
-                .Must(userRepository.PhoneIsUnique)
+                .Must(userRepository.IsPhoneUnique)
                 .WithMessage("Phone must be unique, length less than 15");
-            RuleFor(c => c.Role).NotEmpty()
-                .MaximumLength(32)
-                .Must(roleRepository.RoleIsExist)
-                .WithMessage("Role must exist, length less than 32");
+            RuleFor(c => c.RoleId)
+                .SetValidator(new EntityValidator<RoleEntity>(roleRepository));
         }
     }
 
@@ -65,8 +63,8 @@ public class UpdateUserCommand : IRequest<int>
 
         public async Task<int> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdWithDetailsAsync(request.Id, cancellationToken);
-            var role = await _roleRepository.GetRoleByNameAsync(request.Role!, cancellationToken);
+            var user = await _userRepository.GetByIdWithDetailsAsync(request.Id.Value, cancellationToken);
+            var role = await _roleRepository.GetByIdAsync(request.RoleId.Value, cancellationToken);
 
             user!.Role = role;
             user.CreatedDate = DateTime.Now;

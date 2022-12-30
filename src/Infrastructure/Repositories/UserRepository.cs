@@ -22,19 +22,28 @@ public class UserRepository : BaseRepository<UserEntity>, IUserRepository
 
     public async Task<UserEntity?> GetByIdWithDetailsAsync(int id, CancellationToken ct = default)
     {
-        return await DbContext.Users
-            .Include(c => c.Role)
-            .Include(u => u.CreatedTests)
-            .Include(u => u.PassedTests)
+        return await GetWithDetails()
             .FirstOrDefaultAsync(u => u.Id == id, ct);
     }
 
     public async Task<IEnumerable<UserEntity>> GetAllWithDetailsAsync(CancellationToken ct = default)
     {
-        return await DbContext.Users
-            .Include(c => c.Role)
-            .Include(u => u.CreatedTests)
-            .Include(u => u.PassedTests)
+        return await GetWithDetails()
             .ToListAsync(ct);
+    }
+
+    private IQueryable<UserEntity> GetWithDetails()
+    {
+        return DbContext.Users
+            .Include(c => c.Role)
+            .Include(u => u.CreatedTests!)
+            .ThenInclude(c => c.Questions!)
+            .ThenInclude(q => q.Answers)
+            .Include(u => u.PassedTests!)
+            .ThenInclude(pt => pt.Answers)
+            .Include(u => u.PassedTests!)
+            .ThenInclude(pt => pt.Test!)
+            .ThenInclude(t => t.Questions!)
+            .ThenInclude(q => q.Answers);
     }
 }

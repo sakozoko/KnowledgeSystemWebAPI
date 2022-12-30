@@ -11,4 +11,6 @@ public interface IGenericRepository<T> where T : BaseEntity
     public Task UpdateAsync(T entity, CancellationToken ct = default);
     public Task<T> DeleteAsync(int id, CancellationToken ct = default);
     public Task<T?> GetByPredicateAsync(Expression<Func<T, bool>> predicate, CancellationToken ct = default);
+    
+    public Task<bool> IsExistsAsync(int id, CancellationToken ct = default);
 }

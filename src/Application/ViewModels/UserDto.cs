@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace Application.ViewModels;
 
-namespace Domain.Entities;
-
-public class UserEntity : BaseEntity
+public class UserDto : BaseViewModel
 {
     public string? UserName { get; set; }
     public string? FirstName { get; set; }
@@ -11,7 +9,7 @@ public class UserEntity : BaseEntity
     public DateTime? CreatedDate { get; set; }
     public string? Email { get; set; }
     public string? Password { get; set; }
-    public RoleEntity? Role { get; set; }
-    public ICollection<PassedTestEntity>? PassedTests { get; set; }
-    public ICollection<TestEntity>? CreatedTests { get; set; }
+    public int? RoleId { get; set; }
+    public IEnumerable<PassedTestDto>? PassedTests { get; set; }
+    public IEnumerable<TestDto>? CreatedTests { get; set; }
 }

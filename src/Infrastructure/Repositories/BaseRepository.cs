@@ -44,6 +44,11 @@ public abstract class BaseRepository<T> : IGenericRepository<T> where T : BaseEn
         return await DbContext.Set<T>().FirstOrDefaultAsync(predicate, ct);
     }
 
+    public async Task<bool> IsExistsAsync(int id, CancellationToken ct = default)
+    {
+        return await DbContext.Set<T>().AnyAsync(e => e.Id == id, ct);
+    }
+
     public virtual async Task<T> DeleteAsync(int id, CancellationToken ct = default)
     {
         var entity = await DbContext.Set<T>().FindAsync(new object[] { id }, ct);

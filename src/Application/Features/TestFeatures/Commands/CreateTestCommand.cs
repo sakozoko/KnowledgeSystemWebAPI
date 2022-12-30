@@ -49,7 +49,7 @@ public class CreateTestCommand : IRequest<int>
             
             RuleFor(t=>t.UserCreatorId)
                 .NotEmpty()
-                .Must(userRepository.UserIsExist)
+                .Must(userRepository.IsUserExist)
                 .WithMessage("User with this id doesn't exist");
         }
         
