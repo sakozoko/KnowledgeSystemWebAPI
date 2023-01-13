@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\WebApi\WebApi.csproj", "{B4B219F4-DC90-4C74-BA3F-B4C38093B2F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "src\IdentityServer\IdentityServer.csproj", "{B53D6AB3-785C-4406-8461-50287118FEA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,13 @@ Global
 		{B4B219F4-DC90-4C74-BA3F-B4C38093B2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4B219F4-DC90-4C74-BA3F-B4C38093B2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4B219F4-DC90-4C74-BA3F-B4C38093B2F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C547E3FB-3F80-49AF-9AEB-FA1F97C7AFB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C547E3FB-3F80-49AF-9AEB-FA1F97C7AFB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C547E3FB-3F80-49AF-9AEB-FA1F97C7AFB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C547E3FB-3F80-49AF-9AEB-FA1F97C7AFB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B53D6AB3-785C-4406-8461-50287118FEA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B53D6AB3-785C-4406-8461-50287118FEA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B53D6AB3-785C-4406-8461-50287118FEA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B53D6AB3-785C-4406-8461-50287118FEA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
