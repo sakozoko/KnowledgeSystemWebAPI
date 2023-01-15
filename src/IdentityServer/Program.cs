@@ -26,9 +26,11 @@ builder.Services.AddIdentity<UserEntity, IdentityRole<Guid>>(options =>
 builder.Services.AddIdentityServer()
     .AddInMemoryClients(Config.Clients)
     .AddInMemoryIdentityResources(Config.IdentityResources())
-    .AddInMemoryApiScopes(Config.ApiScopes)
+    .AddInMemoryApiScopes(Config.ApiScopes())
+    .AddInMemoryApiResources(Config.ApiResources())
     .AddDeveloperSigningCredential()
-    .AddAspNetIdentity<UserEntity>();
+    .AddAspNetIdentity<UserEntity>()
+    .AddProfileService<CustomProfileService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,9 +40,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseIdentityServer();
 app.UseAuthorization();
+app.UseCors();
 
 app.MapControllers();
 

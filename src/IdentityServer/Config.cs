@@ -6,11 +6,30 @@ namespace IdentityServer;
 
 public static class Config
 {
-    public static IEnumerable<ApiScope> ApiScopes =>
-        new List<ApiScope>
+    public static IEnumerable<ApiScope> ApiScopes(){
+    return new List<ApiScope>
+                   {
+                       new ApiScope("api1", "My API"),
+                       new ApiScope("api2","My API2")
+                   };
+    }
+        
+
+    public static IEnumerable<ApiResource> ApiResources()
+    {
+        return new[]
         {
-            new ApiScope("api1", "My API")
+            new ApiResource("mvc", "My API")
+            {
+                Scopes = new[] { "api1","api2"},
+                UserClaims = new[]{"role"}
+            },
+            new ApiResource("api1","MyAPI1")
+            {
+                Scopes = new[]{"api1"}
+            }
         };
+    }
 
     public static IEnumerable<IdentityResource> IdentityResources()
     {
@@ -21,14 +40,13 @@ public static class Config
             openIdScope,
             new IdentityResources.Profile(),
             new IdentityResources.Email(),
-            new IdentityResource("roles", new List<string> { JwtClaimTypes.Role, })
+            new ("roles", new List<string> { JwtClaimTypes.Role })
             {
                 Required = true
             },
            new IdentityResources.Address(),
            new IdentityResources.Phone(),
-           new IdentityResource("firstName", new List<string> { JwtClaimTypes.GivenName }),
-           new IdentityResource("lastName", new List<string> { JwtClaimTypes.FamilyName }),
+           new IdentityResource("name",new[]{"FirstName","SecondName"})
         };
     }
 
@@ -46,10 +64,10 @@ public static class Config
                 //AllowAccessTokensViaBrowser = true,
 
                 // where to redirect to after login
-                RedirectUris = { "https://localhost:5002/signin-oidc" },
+                //RedirectUris = { "https://localhost:5002/signin-oidc" },
 
                 // where to redirect to after logout
-               PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+               //PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
                
                AccessTokenLifetime = 36000,
                AllowedScopes = new List<string>
@@ -59,11 +77,7 @@ public static class Config
                     "api1",
                     "roles",
                     IdentityServerConstants.StandardScopes.Email,
-                    IdentityServerConstants.StandardScopes.OfflineAccess,
-                    IdentityServerConstants.StandardScopes.Address,
-                    IdentityServerConstants.StandardScopes.Phone,
-                    "firstName",
-                    "lastName",
+                    "name"
                 }
             }
         };

@@ -1,29 +1,86 @@
 using IdentityServer.Models;
-using IdentityServer.Persistence;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace IdentityServer.Controllers;
 
 public class UserController : ControllerBase
 {
-    private readonly SignInManager<UserEntity> _signInManager;
+    private readonly UserManager<UserEntity> _userManager;
+    private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-    public UserController(SignInManager<UserEntity> signInManager)
+    public UserController(UserManager<UserEntity> userManager, RoleManager<IdentityRole<Guid>> roleManager)
     {
-        _signInManager = signInManager;
+        _roleManager = roleManager;
+        _userManager = userManager;
     }
     [HttpGet]
-    [Route("api1/user")]
+    [Route("api/user")]
     public async Task<IActionResult> Get()
     {
-        User.Claims.ToList();
-        return Ok(await _signInManager.UserManager.CreateAsync(new UserEntity()
+
+        var us = await _userManager.AddToRoleAsync(_userManager.Users.First(), "Admin");
+        return Ok(us);
+    }
+
+    [HttpPost]
+    [Route("api1/user")]
+    public async Task<IActionResult> Post(UserRegistrationRequest request)
+    {
+        var user = new UserEntity()
         {
-            UserName = "testUserName",
-            Email = "testemail@gmail.com",
-        }, "testPassword1+"));
+            UserName = request.UserName,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
+            FirstName = request.FirstName,
+            SecondName = request.SecondName
+        };
+        var result = await _userManager.CreateAsync(user, request.Password);
+        if (result.Succeeded)
+        {
+            return Ok();
+        }
+        return BadRequest(result.Errors);
+    }
+
+    [HttpPut]
+    [Route("api1/user")]
+    public async Task<IActionResult> Put(UserUpdateRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(request.Id);
+        if (user == null)
+        {
+            return BadRequest("User not found");
+        }
+        user.FirstName = request.FirstName;
+        user.SecondName = request.SecondName;
+        user.PhoneNumber = request.PhoneNumber;
+        user.Email = request.Email;
+        var result = await _userManager.UpdateAsync(user);
+        if (result.Succeeded)
+        {
+            return Ok();
+        }
+        return BadRequest(result.Errors);
+    }
+
+    public class UserUpdateRequest
+    {
+        public string? Id { get; set; }
+        public string? FirstName { get; set; }
+        public string? SecondName { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
+    }
+    
+
+    public class UserRegistrationRequest
+    {
+        public string? UserName { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
+        public string? FirstName { get; set; }
+        public string? SecondName { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }
