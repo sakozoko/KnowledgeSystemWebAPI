@@ -2,7 +2,7 @@ using IdentityInfrastructure.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace UserService.CQRS.Commands;
+namespace UserService.Features.Commands;
 
 public class RegisterUserCommand : IRequest<IdentityResult>
 {

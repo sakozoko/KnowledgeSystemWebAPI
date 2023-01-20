@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using UserService.CQRS.Commands;
+using UserService.Features.Commands;
 using UserService.Features.Queries;
 
 namespace UserService.Controllers;
@@ -35,5 +35,20 @@ public class UserController : ControllerBase
     {
         var users = await _mediator.Send(new GetUsersQuery());
         return Ok(users);
+    }
+    [HttpDelete]
+    [Route("api1/user/{id}")] 
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        var result = await _mediator.Send(new DeleteUserCommand(id));
+        return Ok(result);
+    }
+    [HttpPut]
+    [Route("api1/user/{id}")]
+    public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserCommand model)
+    {
+        model.SetId(id);
+        var result = await _mediator.Send(model);
+        return Ok(result);
     }
 }
