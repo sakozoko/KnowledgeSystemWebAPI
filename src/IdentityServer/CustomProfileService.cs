@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using IdentityServer.Models;
+using IdentityInfrastructure.Model;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;

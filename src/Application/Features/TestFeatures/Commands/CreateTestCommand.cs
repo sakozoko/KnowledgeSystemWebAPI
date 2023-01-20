@@ -1,5 +1,6 @@
 ﻿using Application.Extension.Mapping;
 using Application.Interfaces.Repositories;
+using Application.Models;
 using Application.Validation.CommonValidators;
 using Application.ViewModels;
 using Domain.Entities;

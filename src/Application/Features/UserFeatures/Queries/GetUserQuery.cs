@@ -1,5 +1,6 @@
 ﻿using Application.Extension.Mapping;
 using Application.Interfaces.Repositories;
+using Application.Models;
 using Application.Validation.CommonValidators;
 using Application.ViewModels;
 using Domain.Entities;
@@ -10,6 +11,7 @@ namespace Application.Features.UserFeatures.Queries;
 
 public class GetUserQuery : IRequest<UserDto>
 {
+    public UserViewModel? User { get; set; }
     public int? Id { get; set; }
 
     public class GetUserQueryValidator : AbstractValidator<GetUserQuery>
@@ -18,6 +20,9 @@ public class GetUserQuery : IRequest<UserDto>
         {
             RuleFor(p => p.Id)
                 .SetValidator(new EntityValidator<UserEntity>(userRepository));
+            RuleFor(p => p.User)
+                .ChildRules(p => p.RuleFor(u => u.Roles)
+                    .Must(roles=>roles.Contains("Admin")));
         }
     }
 

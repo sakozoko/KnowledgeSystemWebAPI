@@ -1,4 +1,4 @@
-using IdentityServer.Models;
+using IdentityInfrastructure.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +19,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> Get()
     {
 
-        var us = await _userManager.AddToRoleAsync(_userManager.Users.First(), "Admin");
+        var us = await _userManager.AddToRoleAsync(_userManager.Users.First(), "User");
         return Ok(us);
     }
 

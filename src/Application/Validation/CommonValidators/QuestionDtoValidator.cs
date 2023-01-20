@@ -1,4 +1,5 @@
-﻿using Application.ViewModels;
+﻿using Application.Models;
+using Application.ViewModels;
 using FluentValidation;
 
 namespace Application.Validation.CommonValidators;

@@ -1,4 +1,5 @@
-﻿using Application.ViewModels;
+﻿using Application.Models;
+using Application.ViewModels;
 using Domain.Entities;
 
 namespace Application.Extension.Mapping;

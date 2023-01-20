@@ -1,5 +1,6 @@
 ﻿using Application.Extension.Mapping;
 using Application.Interfaces.Repositories;
+using Application.Models;
 using Application.ViewModels;
 using MediatR;
 
