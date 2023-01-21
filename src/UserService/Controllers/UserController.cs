@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Features.Commands;
 using UserService.Features.Queries;
@@ -15,8 +16,7 @@ public class UserController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPost]
-    [Route("api1/user")]
+    [HttpPost("api1/user")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand model)
     {
         var identityResult = await _mediator.Send(model);
@@ -29,22 +29,20 @@ public class UserController : ControllerBase
             return BadRequest(identityResult);
         }
     }
-    [HttpGet]
-    [Route("api1/user")]
+    [Authorize]
+    [HttpGet("api1/user")]
     public async Task<IActionResult> GetUsers()
     {
-        var users = await _mediator.Send(new GetUsersQuery());
+        var users = await _mediator.Send(new GetUsersQuery(User));
         return Ok(users);
     }
-    [HttpDelete]
-    [Route("api1/user/{id}")] 
+    [HttpDelete("api1/user/{id}")]
     public async Task<IActionResult> DeleteUser(string id)
     {
         var result = await _mediator.Send(new DeleteUserCommand(id));
         return Ok(result);
     }
-    [HttpPut]
-    [Route("api1/user/{id}")]
+    [HttpPut("api1/user/{id}")]
     public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserCommand model)
     {
         model.SetId(id);

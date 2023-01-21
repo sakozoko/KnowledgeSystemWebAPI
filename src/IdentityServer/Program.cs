@@ -1,6 +1,8 @@
 using IdentityInfrastructure;
 using IdentityInfrastructure.Model;
+using IdentityInfrastructure.Persistence;
 using IdentityServer;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure();
+builder.Services.AddIdentity<UserEntity, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<IdentityContext>();
+
 
 builder.Services.AddIdentityServer()
     .AddInMemoryClients(Config.Clients)

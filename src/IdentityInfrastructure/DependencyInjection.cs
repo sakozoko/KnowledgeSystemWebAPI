@@ -13,17 +13,7 @@ public static class DependencyInjection
         services.AddDbContext<IdentityContext>(options =>
             options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=identityServer;Trusted_Connection=True;MultipleActiveResultSets=true"));
 
-        services.AddIdentity<UserEntity, IdentityRole<Guid>>(options =>
-        {
-            options.User.RequireUniqueEmail = true;
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequiredLength = 6;
-        })
-            .AddEntityFrameworkStores<IdentityContext>();
-
+        
         return services;
     }
 
