@@ -7,7 +7,6 @@ namespace Middleware;
 
 public class ExceptionHandlingMiddleware : IMiddleware
 {
-
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
     public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger)

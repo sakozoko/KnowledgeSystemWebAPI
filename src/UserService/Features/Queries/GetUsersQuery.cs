@@ -11,26 +11,25 @@ namespace UserService.Features.Queries;
 
 public record GetUsersQuery(ClaimsPrincipal User) : IRequest<IEnumerable<UserViewModel>>
 {
-
     public class GetUsersQueryValidator : AbstractValidator<GetUsersQuery>
     {
         public GetUsersQueryValidator()
         {
-            RuleFor(x => 
+            RuleFor(x =>
                     x.User.Identity)
                 .NotNull()
-                .ChildRules(c=>
-                    c.RuleFor(i=>i!.IsAuthenticated)
+                .ChildRules(c =>
+                    c.RuleFor(i => i!.IsAuthenticated)
                         .Equal(true))
                 .WithMessage("User is not authenticated");
-            RuleFor(x => 
+            RuleFor(x =>
                     x.User.FindAll(ClaimTypes.Role)
-                    .Select(c => c.Value))
+                        .Select(c => c.Value))
                 .Must(c => c.Contains(Role.Admin))
                 .WithMessage("User is not authorized");
-
         }
     }
+
     public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserViewModel>>
     {
         private readonly UserManager<UserEntity> _userManager;
@@ -39,6 +38,7 @@ public record GetUsersQuery(ClaimsPrincipal User) : IRequest<IEnumerable<UserVie
         {
             _userManager = userManager;
         }
+
         public async Task<IEnumerable<UserViewModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
             var users = await _userManager.Users.ToListAsync(cancellationToken);

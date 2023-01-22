@@ -12,7 +12,7 @@ public static class DependencyInjection
         services.AddTransient<ExceptionHandlingMiddleware>();
         return services;
     }
-    
+
     public static IApplicationBuilder UseMiddleware(this IApplicationBuilder app)
     {
         app.UseMiddleware<ExceptionHandlingMiddleware>();

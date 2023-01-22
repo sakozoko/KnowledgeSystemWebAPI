@@ -21,14 +21,10 @@ public class UserController : ControllerBase
     {
         var identityResult = await _mediator.Send(model);
         if (identityResult.Succeeded)
-        {
             return Ok(identityResult);
-        }
-        else
-        {
-            return BadRequest(identityResult);
-        }
+        return BadRequest(identityResult);
     }
+
     [Authorize]
     [HttpGet("api1/users")]
     public async Task<IActionResult> GetUsers()
@@ -36,12 +32,14 @@ public class UserController : ControllerBase
         var users = await _mediator.Send(new GetUsersQuery(User));
         return Ok(users);
     }
+
     [HttpDelete("api1/user/{id}")]
     public async Task<IActionResult> DeleteUser(string id)
     {
         var result = await _mediator.Send(new DeleteUserCommand(id));
         return Ok(result);
     }
+
     [HttpPut("api1/user/{id}")]
     public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserCommand model)
     {

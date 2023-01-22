@@ -10,7 +10,7 @@ public static class UserMapper
     {
         return user.ToViewModel(Array.Empty<string>());
     }
-    
+
     public static UserViewModel ToViewModel(this UserEntity user, string role)
     {
         return user.ToViewModel(new[] { role });
@@ -35,17 +35,18 @@ public static class UserMapper
     {
         return users.Select(ToViewModel);
     }
-    public static async Task<IEnumerable<UserViewModel>> ToViewModelsIncludeRolesAsync(this IEnumerable<UserEntity> users, UserManager<UserEntity> userManager)
+
+    public static async Task<IEnumerable<UserViewModel>> ToViewModelsIncludeRolesAsync(
+        this IEnumerable<UserEntity> users, UserManager<UserEntity> userManager)
     {
         var result = new List<UserViewModel>();
-        
+
         foreach (var userEntity in users)
         {
             var roles = await userManager.GetRolesAsync(userEntity);
-             result.Add(userEntity.ToViewModel(roles));
+            result.Add(userEntity.ToViewModel(roles));
         }
 
         return result;
     }
-
 }

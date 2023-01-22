@@ -14,10 +14,11 @@ public class RegisterUserCommand : IRequest<IdentityResult>
 
     public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, IdentityResult>
     {
-        private readonly UserManager<UserEntity> _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
+        private readonly UserManager<UserEntity> _userManager;
 
-        public RegisterUserCommandHandler(UserManager<UserEntity> userManager, RoleManager<IdentityRole<Guid>> roleManager)
+        public RegisterUserCommandHandler(UserManager<UserEntity> userManager,
+            RoleManager<IdentityRole<Guid>> roleManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
@@ -34,7 +35,6 @@ public class RegisterUserCommand : IRequest<IdentityResult>
             };
             await _userManager.CreateAsync(newUser, request.Password!);
             return await _userManager.AddToRoleAsync(newUser, "User");
-            
         }
     }
 }

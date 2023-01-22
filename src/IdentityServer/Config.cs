@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -7,14 +6,46 @@ namespace IdentityServer;
 
 public static class Config
 {
-    public static IEnumerable<ApiScope> ApiScopes(){
-    return new List<ApiScope>
-                   {
-                       new ApiScope("api1", "My API"),
-                       new ApiScope("api2","My API2")
-                   };
+    public static IEnumerable<Client> Clients =>
+        new List<Client>
+        {
+            new()
+            {
+                ClientId = "mvc",
+                ClientSecrets = { new Secret("secret".Sha256()) },
+
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+
+                //AllowAccessTokensViaBrowser = true,
+
+                // where to redirect to after login
+                //RedirectUris = { "https://localhost:5002/signin-oidc" },
+
+                // where to redirect to after logout
+                //PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+
+                AccessTokenLifetime = 36000,
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "api1",
+                    "roles",
+                    IdentityServerConstants.StandardScopes.Email,
+                    "name"
+                }
+            }
+        };
+
+    public static IEnumerable<ApiScope> ApiScopes()
+    {
+        return new List<ApiScope>
+        {
+            new("api1", "My API"),
+            new("api2", "My API2")
+        };
     }
-        
+
 
     public static IEnumerable<ApiResource> ApiResources()
     {
@@ -22,13 +53,13 @@ public static class Config
         {
             new ApiResource("api", "My API")
             {
-                Scopes = new[] { "api1","api2"},
-                UserClaims = new[]{"role"}
+                Scopes = new[] { "api1", "api2" },
+                UserClaims = new[] { "role" }
             },
-            new ApiResource("UserService","MyAPI1")
+            new ApiResource("UserService", "MyAPI1")
             {
-                Scopes = new[]{"api1"},
-                UserClaims = new[]{"role"}
+                Scopes = new[] { "api1" },
+                UserClaims = new[] { "role" }
             }
         };
     }
@@ -42,45 +73,13 @@ public static class Config
             openIdScope,
             new IdentityResources.Profile(),
             new IdentityResources.Email(),
-            new ("roles", new List<string> { JwtClaimTypes.Role })
+            new("roles", new List<string> { JwtClaimTypes.Role })
             {
                 Required = true
             },
-           new IdentityResources.Address(),
-           new IdentityResources.Phone(),
-           new IdentityResource("name",new[]{"FirstName","SecondName"})
+            new IdentityResources.Address(),
+            new IdentityResources.Phone(),
+            new("name", new[] { "FirstName", "SecondName" })
         };
     }
-
-
-    public static IEnumerable<Client> Clients =>
-        new List<Client>
-        {
-            new Client
-            {
-                ClientId = "mvc",
-                ClientSecrets = { new Secret("secret".Sha256()) },
-
-                AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
-                
-                //AllowAccessTokensViaBrowser = true,
-
-                // where to redirect to after login
-                //RedirectUris = { "https://localhost:5002/signin-oidc" },
-
-                // where to redirect to after logout
-               //PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
-               
-               AccessTokenLifetime = 36000,
-               AllowedScopes = new List<string>
-                {
-                    IdentityServerConstants.StandardScopes.OpenId,
-                    IdentityServerConstants.StandardScopes.Profile,
-                    "api1",
-                    "roles",
-                    IdentityServerConstants.StandardScopes.Email,
-                    "name"
-                }
-            }
-        };
 }
