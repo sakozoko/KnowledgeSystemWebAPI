@@ -1,11 +1,12 @@
 using System.Reflection;
+using FluentValidation;
 using IdentityInfrastructure;
 using IdentityInfrastructure.Model;
 using IdentityInfrastructure.Persistence;
-using IdentityModel;
-using IdentityServer4.AccessTokenValidation;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddMiddleware();
 builder.Services.AddInfrastructure();
 
 builder.Services.AddIdentityCore<UserEntity>(options =>
@@ -27,30 +30,16 @@ builder.Services.AddIdentityCore<UserEntity>(options =>
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 6;
     }).AddRoles<IdentityRole<Guid>>()
-    .AddSignInManager()
     .AddEntityFrameworkStores<IdentityContext>();
 
-builder.Services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-    .AddIdentityServerAuthentication(options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
         options.Authority = "https://localhost:7243";
-        options.ApiName = "mvc";
-        options.ApiSecret = "secret".ToSha256();
+        options.Audience = "UserService";
         options.RequireHttpsMetadata = false;
     });
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(
-        bder =>
-        {
-            bder
-                .WithOrigins("http://localhost:7243")
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        });
-});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -63,7 +52,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseMiddleware();
 
 app.MapControllers();
 

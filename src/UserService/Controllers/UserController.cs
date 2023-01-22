@@ -16,7 +16,7 @@ public class UserController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPost("api1/user")]
+    [HttpPost("api1/user/register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand model)
     {
         var identityResult = await _mediator.Send(model);
@@ -30,7 +30,7 @@ public class UserController : ControllerBase
         }
     }
     [Authorize]
-    [HttpGet("api1/user")]
+    [HttpGet("api1/users")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await _mediator.Send(new GetUsersQuery(User));

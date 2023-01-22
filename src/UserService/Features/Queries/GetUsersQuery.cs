@@ -1,9 +1,9 @@
 using System.Security.Claims;
+using FluentValidation;
 using IdentityInfrastructure.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using UserService.Extensions.Mappers;
 using UserService.ViewModels;
 
@@ -11,6 +11,26 @@ namespace UserService.Features.Queries;
 
 public record GetUsersQuery(ClaimsPrincipal User) : IRequest<IEnumerable<UserViewModel>>
 {
+
+    public class GetUsersQueryValidator : AbstractValidator<GetUsersQuery>
+    {
+        public GetUsersQueryValidator()
+        {
+            RuleFor(x => 
+                    x.User.Identity)
+                .NotNull()
+                .ChildRules(c=>
+                    c.RuleFor(i=>i!.IsAuthenticated)
+                        .Equal(true))
+                .WithMessage("User is not authenticated");
+            RuleFor(x => 
+                    x.User.FindAll(ClaimTypes.Role)
+                    .Select(c => c.Value))
+                .Must(c => c.Contains(Role.Admin))
+                .WithMessage("User is not authorized");
+
+        }
+    }
     public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IEnumerable<UserViewModel>>
     {
         private readonly UserManager<UserEntity> _userManager;
@@ -21,21 +41,6 @@ public record GetUsersQuery(ClaimsPrincipal User) : IRequest<IEnumerable<UserVie
         }
         public async Task<IEnumerable<UserViewModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
-            if (!request.User.Identity!.IsAuthenticated)
-            {
-                throw new SecurityTokenException("User is not authenticated");
-            }
-                
-            var user = await _userManager.FindByIdAsync(request.User.FindFirst("sub")!.Value);
-            if(user == null)
-            {
-                throw new SecurityTokenException("User not found");
-            }
-            var userRole = await _userManager.GetRolesAsync(user);
-            if(!userRole.Contains(Role.Admin))
-            {
-                throw new SecurityTokenException("User is not admin");
-            }
             var users = await _userManager.Users.ToListAsync(cancellationToken);
             return await users.ToViewModelsIncludeRolesAsync(_userManager);
         }

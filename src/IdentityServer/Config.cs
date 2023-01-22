@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
@@ -19,14 +20,15 @@ public static class Config
     {
         return new[]
         {
-            new ApiResource("mvc", "My API")
+            new ApiResource("api", "My API")
             {
                 Scopes = new[] { "api1","api2"},
                 UserClaims = new[]{"role"}
             },
-            new ApiResource("api1","MyAPI1")
+            new ApiResource("UserService","MyAPI1")
             {
-                Scopes = new[]{"api1"}
+                Scopes = new[]{"api1"},
+                UserClaims = new[]{"role"}
             }
         };
     }
