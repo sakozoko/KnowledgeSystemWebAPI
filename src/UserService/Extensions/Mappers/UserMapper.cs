@@ -16,10 +16,11 @@ public static class UserMapper
         return user.ToViewModel(new[] { role });
     }
 
-    public static UserViewModel ToViewModel(this UserEntity user, IEnumerable<string> roles)
+    public static UserViewModel ToViewModel(this UserEntity user, IEnumerable<string>? roles)
     {
         return new UserViewModel
         {
+            Id=user.Id.ToString(),
             Email = user.Email,
             UserName = user.UserName,
             FirstName = user.FirstName,

@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UserService.Extensions.Mappers;
+using UserService.Validators;
 using UserService.ViewModels;
 
 namespace UserService.Features.Queries;
@@ -15,18 +16,8 @@ public record GetUsersQuery(ClaimsPrincipal User) : IRequest<IEnumerable<UserVie
     {
         public GetUsersQueryValidator()
         {
-            RuleFor(x =>
-                    x.User.Identity)
-                .NotNull()
-                .ChildRules(c =>
-                    c.RuleFor(i => i!.IsAuthenticated)
-                        .Equal(true))
-                .WithMessage("User is not authenticated");
-            RuleFor(x =>
-                    x.User.FindAll(ClaimTypes.Role)
-                        .Select(c => c.Value))
-                .Must(c => c.Contains(Role.Admin))
-                .WithMessage("User is not authorized");
+            RuleFor(x => x.User)
+                .SetValidator(new AuthenticatedUserIsAdminValidator());
         }
     }
 
