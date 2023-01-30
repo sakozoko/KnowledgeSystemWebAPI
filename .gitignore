@@ -154,3 +154,10 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+.idea/.idea.WebApplication1/.idea/.gitignore
+.idea/.idea.WebApplication1/.idea/.name
+.gitignore
+.idea/.idea.WebApplication1/.idea/indexLayout.xml
+.idea/.idea.WebApplication1/.idea/vcs.xml
+.vscode/launch.json
+.vscode/tasks.json

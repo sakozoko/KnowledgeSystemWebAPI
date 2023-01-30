@@ -35,7 +35,7 @@ public class UserController : ControllerBase
             FirstName = request.FirstName,
             SecondName = request.SecondName
         };
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var result = await _userManager.CreateAsync(user, request.Password!);
         if (result.Succeeded) return Ok();
         return BadRequest(result.Errors);
     }
@@ -44,7 +44,7 @@ public class UserController : ControllerBase
     [Route("api1/user")]
     public async Task<IActionResult> Put(UserUpdateRequest request)
     {
-        var user = await _userManager.FindByIdAsync(request.Id);
+        var user = await _userManager.FindByIdAsync(request.Id!);
         if (user == null) return BadRequest("User not found");
         user.FirstName = request.FirstName;
         user.SecondName = request.SecondName;

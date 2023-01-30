@@ -24,7 +24,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\IdentityInfrastructure\IdentityInfrastructure.csproj" />
-        <ProjectReference Include="..\Middleware\Middleware.csproj" />
     </ItemGroup>
 
 </Project>

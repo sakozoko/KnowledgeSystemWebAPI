@@ -2,6 +2,7 @@ using FluentValidation;
 using IdentityInfrastructure.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using UserService.Exceptions.IdentityResultFailedException;
 using UserService.Validators;
 
 namespace UserService.Features.Commands;
@@ -33,17 +34,20 @@ public record UpdateUserRoleCommand(string? Id, string? Role) : IRequest<Identit
         {
             var user = await _userManager.FindByIdAsync(request.Id!);
             if (user == null)
-                return IdentityResult.Failed(new IdentityError() 
-                { 
-                    Code = "UserNotFound",
-                    Description = "User not found" 
-                });
+            {
+                throw new IdentityResultFailedException(IdentityResultFailedCodes.UserNotFound);
+            }
             var roles = await _userManager.GetRolesAsync(user);
             var role = roles.First();
-            if (request.Role != null && role != IdentityInfrastructure.Model.Role.Admin)
+            if (role != null && role != IdentityInfrastructure.Model.Role.Admin)
             {
                 await _userManager.RemoveFromRoleAsync(user, role);
-                return await _userManager.AddToRoleAsync(user, request.Role);
+                var result = await _userManager.AddToRoleAsync(user, request.Role!);
+                if(!result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, role);
+                    throw new IdentityResultFailedException(IdentityResultFailedCodes.RoleNotFound);
+                }
             }
 
             return IdentityResult.Success;

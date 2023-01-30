@@ -3,6 +3,7 @@ using FluentValidation;
 using IdentityInfrastructure.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using UserService.Exceptions.IdentityResultFailedException;
 using UserService.Validators;
 namespace UserService.Features.Commands;
 
@@ -50,19 +51,16 @@ public class UpdateUserInfoCommand : IRequest<IdentityResult>
         {
             var user = await _userManager.FindByIdAsync(request.Id!);
             if (user == null)
-                return IdentityResult.Failed(new IdentityError
-                {
-                    Code = "UserNotFound",
-                    Description = "User not found"
-                });
-            if(request.Id==request.User!.FindFirstValue(ClaimTypes.NameIdentifier) 
-               || request.User!.IsInRole(Role.Admin))
-                return await UpdateUser(user, request);
-            return IdentityResult.Failed(new IdentityError()
             {
-                Code = "AccessDenied",
-                Description = "Access denied"
-            });
+                throw new IdentityResultFailedException(IdentityResultFailedCodes.UserNotFound);
+            }
+                
+            if(request.Id!=request.User!.FindFirstValue(ClaimTypes.NameIdentifier) 
+               && !request.User!.IsInRole(Role.Admin))
+            {
+                throw new IdentityResultFailedException(IdentityResultFailedCodes.AccessDenied);
+            }
+            return await UpdateUser(user, request);
         }
 
         private async Task<IdentityResult> UpdateUser(UserEntity user, UpdateUserInfoCommand request)

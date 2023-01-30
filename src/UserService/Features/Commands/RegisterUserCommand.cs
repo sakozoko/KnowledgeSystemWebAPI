@@ -1,6 +1,7 @@
 using IdentityInfrastructure.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using UserService.Exceptions.IdentityResultFailedException;
 
 namespace UserService.Features.Commands;
 
@@ -30,8 +31,18 @@ public class RegisterUserCommand : IRequest<IdentityResult>
                 SecondName = request.LastName,
                 Email = request.Email
             };
-            await _userManager.CreateAsync(newUser, request.Password!);
-            return await _userManager.AddToRoleAsync(newUser, "User");
+            var result = await _userManager.CreateAsync(newUser, request.Password!);
+            if(!result.Succeeded)
+            {
+                throw new IdentityResultFailedException(IdentityResultFailedCodes.BadUserModel);
+            }
+            result = await _userManager.AddToRoleAsync(newUser, "User");
+            if(!result.Succeeded)
+            {
+                throw new IdentityResultFailedException(IdentityResultFailedCodes.RoleNotFound);
+            }
+                
+            return result;
         }
     }
 }

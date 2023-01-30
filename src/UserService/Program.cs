@@ -6,7 +6,7 @@ using IdentityInfrastructure.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Middleware;
+using UserService.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 

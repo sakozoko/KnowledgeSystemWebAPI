@@ -36,16 +36,16 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetUser(string id)
     {
         var user = await _mediator.Send(new GetUserQuery(id, User));
-        return Ok(user);
+        return user!=null ? Ok(user) : NotFound();;
     }
-
+    [Authorize(Roles = Role.Admin)]
     [HttpDelete("api1/user/{id}")]
     public async Task<IActionResult> DeleteUser(string id)
     {
         var result = await _mediator.Send(new DeleteUserCommand(id,User));
         return Ok(result);
     }
-
+    [Authorize]
     [HttpPut("api1/user/{id}")]
     public async Task<IActionResult> UpdateUser(string id, [FromBody] UpdateUserInfoCommand model)
     {

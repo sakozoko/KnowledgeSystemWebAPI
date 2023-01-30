@@ -3,6 +3,7 @@ using FluentValidation;
 using IdentityInfrastructure.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using UserService.Exceptions.IdentityResultFailedException;
 using UserService.Extensions.Mappers;
 using UserService.Validators;
 using UserService.ViewModels;
@@ -35,7 +36,9 @@ public record GetUserQuery(string? Id,ClaimsPrincipal User) : IRequest<UserViewM
         {
             var user = await _userManager.GetUserAsync(request.User);
             if(user == null)
-                throw new Exception("User sent request not found");
+            {
+                throw new IdentityResultFailedException(IdentityResultFailedCodes.UserNotFound);
+            }
             UserViewModel? result;
             if (await _userManager.IsInRoleAsync(user, Role.Admin))
             {

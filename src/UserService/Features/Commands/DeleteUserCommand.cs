@@ -3,6 +3,7 @@ using FluentValidation;
 using IdentityInfrastructure.Model;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using UserService.Exceptions.IdentityResultFailedException;
 using UserService.Validators;
 
 namespace UserService.Features.Commands;
@@ -33,11 +34,7 @@ public record DeleteUserCommand(string? Id, ClaimsPrincipal User) : IRequest<Ide
         {
             var user = await _userManager.FindByIdAsync(request.Id!);
             if (user == null)
-                return IdentityResult.Failed(new IdentityError
-                {
-                    Code = "UserNotFound",
-                    Description = "User not found"
-                });
+                throw new IdentityResultFailedException(IdentityResultFailedCodes.UserNotFound);
             return await _userManager.DeleteAsync(user);
         }
     }
