@@ -8,11 +8,11 @@ using UserService.Features.Queries;
 namespace UserService.Controllers;
 
 [Controller]
-public class UserController : ControllerBase
+public class AccountController : ControllerBase
 {
     
     private readonly IMediator _mediator;
-    public UserController(IMediator mediator)
+    public AccountController(IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -20,6 +20,15 @@ public class UserController : ControllerBase
     [HttpPost("api1/user/register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserCommand model)
     {
+        var result = await _mediator.Send(model);
+        return Ok(result);
+    }
+    
+    [AllowAnonymous]
+    [HttpPost("api1/user/changePassword")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand model)
+    {
+        model.SetUser(User);
         var result = await _mediator.Send(model);
         return Ok(result);
     }
@@ -40,7 +49,7 @@ public class UserController : ControllerBase
     }
     [Authorize(Roles = Role.Admin)]
     [HttpDelete("api1/user/{id}")]
-    public async Task<IActionResult> DeleteUser(string id)
+    public async Task<ActionResult> DeleteUser(string id)
     {
         var result = await _mediator.Send(new DeleteUserCommand(id,User));
         return Ok(result);
