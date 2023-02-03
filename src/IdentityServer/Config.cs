@@ -56,7 +56,7 @@ public static class Config
                 Scopes = new[] { "api1", "api2" },
                 UserClaims = new[] { "role" }
             },
-            new ApiResource("UserService", "MyAPI1")
+            new ApiResource("AccountApi", "MyAPI1")
             {
                 Scopes = new[] { "api1" },
                 UserClaims = new[] { "role" }

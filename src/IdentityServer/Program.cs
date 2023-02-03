@@ -1,7 +1,12 @@
+using System.Reflection;
+using FluentValidation;
 using IdentityInfrastructure;
 using IdentityInfrastructure.Model;
 using IdentityInfrastructure.Persistence;
 using IdentityServer;
+using IdentityServer.Middleware;
+using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,11 +17,29 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMiddleware();
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 builder.Services.AddInfrastructure();
-builder.Services.AddIdentity<UserEntity, IdentityRole<Guid>>()
+builder.Services.AddIdentity<UserEntity, IdentityRole<Guid>>(options =>
+    {
+        options.User.RequireUniqueEmail = true;
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 6;
+    })
     .AddEntityFrameworkStores<IdentityContext>();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://localhost:7243";
+        options.Audience = "AccountApi";
+        options.RequireHttpsMetadata = false;
+    });
 
 builder.Services.AddIdentityServer()
     .AddInMemoryClients(Config.Clients)
@@ -35,10 +58,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseIdentityServer();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseMiddleware();
 
 app.Run();
